@@ -1,0 +1,61 @@
+{
+  "run_id": "20260421-111039",
+  "validation": {
+    "sheet_results": {
+      "margin.csv": "WARNING",
+      "deadstock.csv": "PASS",
+      "credit.csv": "PASS"
+    },
+    "overall_decision": "CONDITIONAL PASS",
+    "reasons": [
+      "Data passed with warnings requiring attention",
+      "[margin.csv] Invalid dates in column \"Time Friction Applied\": 88 rows"
+    ]
+  },
+  "engines": [
+    {
+      "engine": "margin-mastery",
+      "status": "SKIPPED",
+      "payload": {
+        "reason": "ENGINE_URL_NOT_SET",
+        "hint": "Start engine service and ensure /health responds with the engine name"
+      }
+    },
+    {
+      "engine": "deadstock",
+      "status": "SKIPPED",
+      "payload": {
+        "reason": "ENGINE_URL_NOT_SET",
+        "hint": "Start engine service and ensure /health responds with the engine name"
+      }
+    },
+    {
+      "engine": "credit-remove",
+      "status": "SKIPPED",
+      "payload": {
+        "reason": "ENGINE_URL_NOT_SET",
+        "hint": "Start engine service and ensure /health responds with the engine name"
+      }
+    }
+  ],
+  "planner": {
+    "status": "SKIPPED",
+    "reason": "PLANNER_URL_NOT_SET",
+    "hint": "Start planner service and ensure /health responds with engine=planner",
+    "merged_actions": [
+      {
+        "reason": "ENGINE_URL_NOT_SET",
+        "hint": "Start engine service and ensure /health responds with the engine name"
+      },
+      {
+        "reason": "ENGINE_URL_NOT_SET",
+        "hint": "Start engine service and ensure /health responds with the engine name"
+      },
+      {
+        "reason": "ENGINE_URL_NOT_SET",
+        "hint": "Start engine service and ensure /health responds with the engine name"
+      }
+    ]
+  },
+  "errors": []
+}

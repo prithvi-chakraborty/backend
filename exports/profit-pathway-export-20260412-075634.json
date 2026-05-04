@@ -1,0 +1,41 @@
+{
+  "run_id": "20260412-075634",
+  "validation": {
+    "sheet_results": {
+      "margin_engine_data_healthy.csv": "PASS",
+      "deadstock_liquidation_data_healthy.csv": "PASS",
+      "credit_recovery_data_healthy.csv": "FAIL"
+    },
+    "overall_decision": "CONDITIONAL PASS",
+    "reasons": [
+      "[credit_recovery_data_healthy.csv] Duplicate identifiers in \"invoiceDate\": 3 duplicates",
+      "[credit_recovery_data_healthy.csv] Duplicate identifiers in \"totalInvoices\": 4 duplicates"
+    ]
+  },
+  "engines": [
+    {
+      "reason": "ENGINE_URL_NOT_SET"
+    },
+    {
+      "reason": "ENGINE_URL_NOT_SET"
+    },
+    {
+      "reason": "ENGINE_URL_NOT_SET"
+    }
+  ],
+  "planner": {
+    "status": "SKIPPED",
+    "reason": "PLANNER_URL_NOT_SET",
+    "merged_actions": [
+      {
+        "reason": "ENGINE_URL_NOT_SET"
+      },
+      {
+        "reason": "ENGINE_URL_NOT_SET"
+      },
+      {
+        "reason": "ENGINE_URL_NOT_SET"
+      }
+    ]
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "run_id": "20260418-073232",
+  "validation": {
+    "sheet_results": {
+      "margin_engine_data_healthy.csv": "PASS",
+      "deadstock_liquidation_data_healthy.csv": "PASS",
+      "credit_recovery_data_healthy.csv": "PASS"
+    },
+    "overall_decision": "PASS",
+    "reasons": []
+  },
+  "engines": [
+    {
+      "engine": "margin-mastery",
+      "status": "SKIPPED",
+      "payload": {
+        "reason": "ENGINE_URL_NOT_SET"
+      }
+    },
+    {
+      "engine": "deadstock",
+      "status": "SKIPPED",
+      "payload": {
+        "reason": "ENGINE_URL_NOT_SET"
+      }
+    },
+    {
+      "engine": "credit-remove",
+      "status": "SKIPPED",
+      "payload": {
+        "reason": "ENGINE_URL_NOT_SET"
+      }
+    }
+  ],
+  "planner": {
+    "status": "SKIPPED",
+    "reason": "PLANNER_URL_NOT_SET",
+    "merged_actions": [
+      {
+        "reason": "ENGINE_URL_NOT_SET"
+      },
+      {
+        "reason": "ENGINE_URL_NOT_SET"
+      },
+      {
+        "reason": "ENGINE_URL_NOT_SET"
+      }
+    ]
+  },
+  "errors": []
+}

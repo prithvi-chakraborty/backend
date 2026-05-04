@@ -1,0 +1,56 @@
+{
+  "run_id": "20260416-143519",
+  "validation": {
+    "sheet_results": {
+      "margin_engine_data_healthy.csv": "PASS",
+      "deadstock_liquidation_data_healthy.csv": "PASS",
+      "credit_recovery_data_healthy.csv": "FAIL"
+    },
+    "overall_decision": "FAIL",
+    "reasons": [
+      "One or more core sheets failed validation",
+      "[credit_recovery_data_healthy.csv] Duplicate identifiers in \"invoice_id\": 1 duplicates"
+    ]
+  },
+  "engines": [
+    {
+      "engine": "margin-mastery",
+      "status": "SKIPPED",
+      "payload": {
+        "reason": "VALIDATION_FAILED"
+      }
+    },
+    {
+      "engine": "deadstock",
+      "status": "SKIPPED",
+      "payload": {
+        "reason": "VALIDATION_FAILED"
+      }
+    },
+    {
+      "engine": "credit-remove",
+      "status": "SKIPPED",
+      "payload": {
+        "reason": "VALIDATION_FAILED"
+      }
+    }
+  ],
+  "planner": {
+    "status": "SKIPPED",
+    "reason": "VALIDATION_FAILED",
+    "merged_actions": [
+      {
+        "reason": "VALIDATION_FAILED"
+      },
+      {
+        "reason": "VALIDATION_FAILED"
+      },
+      {
+        "reason": "VALIDATION_FAILED"
+      }
+    ]
+  },
+  "errors": [
+    "Validation failed. Engine and planner processing skipped."
+  ]
+}

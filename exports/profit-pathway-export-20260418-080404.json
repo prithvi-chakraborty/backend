@@ -1,0 +1,40 @@
+{
+  "run_id": "20260418-080404",
+  "validation": {
+    "sheet_results": {
+      "margin_engine_data_healthy.csv": "PASS",
+      "deadstock_liquidation_data_healthy.csv": "PASS",
+      "credit_recovery_data_healthy.csv": "PASS"
+    },
+    "overall_decision": "PASS",
+    "reasons": []
+  },
+  "engines": [
+    {
+      "engine": "margin-mastery",
+      "status": "ERROR",
+      "payload": {
+        "error": "404 Client Error: Not Found for url: http://localhost:8080/process%20"
+      }
+    },
+    {
+      "engine": "deadstock",
+      "status": "ERROR",
+      "payload": {
+        "error": "404 Client Error: Not Found for url: http://localhost:8081/process%20"
+      }
+    },
+    {
+      "engine": "credit-remove",
+      "status": "ERROR",
+      "payload": {
+        "error": "404 Client Error: Not Found for url: http://localhost:8082/process%20"
+      }
+    }
+  ],
+  "planner": {
+    "status": "ERROR",
+    "error": "404 Client Error: Not Found for url: http://localhost:8083/process%20"
+  },
+  "errors": []
+}
