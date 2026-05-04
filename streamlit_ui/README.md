@@ -8,7 +8,7 @@ This folder contains a Streamlit UI that talks to the FastAPI orchestrator **ove
 
 ## Render settings
 
-- Root directory: `backend/streamlit ui`
+- Root directory: `streamlit_ui`
 - Build command: `pip install -r requirements.txt`
 - Start command:
   - `streamlit run streamlit_app.py --server.address 0.0.0.0 --server.port $PORT --server.headless true`
