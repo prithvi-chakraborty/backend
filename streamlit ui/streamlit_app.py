@@ -36,7 +36,6 @@ def _get_secret(key: str) -> str | None:
 
 def _resolve_fastapi_url() -> str | None:
     candidates = [
-        st.session_state.get("fastapi_url_override"),
         os.getenv("FASTAPI_URL"),
         _get_secret("FASTAPI_URL"),
     ]
@@ -47,38 +46,11 @@ def _resolve_fastapi_url() -> str | None:
     return None
 
 
-st.sidebar.header("Connection")
-prefill = (
-    st.session_state.get("fastapi_url_override")
-    or os.getenv("FASTAPI_URL")
-    or _get_secret("FASTAPI_URL")
-    or ""
-)
-raw_input = st.sidebar.text_input(
-    "FASTAPI base URL",
-    value=prefill,
-    placeholder="http://localhost:8000",
-    help=(
-        "Base URL only (no /process). Example: https://<service>.onrender.com or "
-        "http://localhost:8000"
-    ),
-)
-if st.sidebar.button("Use localhost:8000"):
-    st.session_state["fastapi_url_override"] = "http://localhost:8000"
-    st.rerun()
-
-if raw_input:
-    normalized = _normalize_fastapi_url(raw_input)
-    if normalized:
-        st.session_state["fastapi_url_override"] = normalized
-    else:
-        st.sidebar.error("Invalid URL. Use a value like http://localhost:8000")
-
 FASTAPI_URL = _resolve_fastapi_url()
 if not FASTAPI_URL:
     st.error(
-        "Missing/invalid FastAPI base URL. Set `FASTAPI_URL` as an environment "
-        "variable / Streamlit secret, or enter it in the sidebar."
+        "Missing/invalid FASTAPI_URL. Set `FASTAPI_URL` (env var or Streamlit secret) "
+        "to your orchestrator base URL (example: https://<service>.onrender.com)."
     )
     st.stop()
 

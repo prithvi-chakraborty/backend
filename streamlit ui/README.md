@@ -5,7 +5,6 @@ This folder contains a Streamlit UI that talks to the FastAPI orchestrator **ove
 ## Environment variables
 
 - `FASTAPI_URL`: base URL of the orchestrator (example: `https://<orchestrator>.onrender.com`)
-  - If not set, you can enter the URL in the app’s sidebar under **Connection** (useful for local dev and ad-hoc testing).
 
 ## Render settings
 
