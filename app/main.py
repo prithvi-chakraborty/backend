@@ -147,6 +147,16 @@ def health() -> dict:
     }
 
 
+@app.get("/")
+def root() -> dict:
+    return {
+        "service": "Profit Pathway Orchestrator",
+        "status": "ok",
+        "health": "/health",
+        "process": "/process",
+    }
+
+
 @app.post("/process")
 async def process(
     margin: UploadFile = File(...),
