@@ -47,6 +47,12 @@ _ENGINE_ALIASES = {
     "credit-remove": {"credit-remove", "credit"},
     "planner": {"planner"},
 }
+_ENGINE_ENV_NAMES = {
+    "margin-mastery": "MARGIN_ENGINE_URL",
+    "deadstock": "DEADSTOCK_ENGINE_URL",
+    "credit-remove": "CREDIT_ENGINE_URL",
+    "planner": "PLANNER_URL",
+}
 
 
 def _now_run_id() -> str:
@@ -251,9 +257,9 @@ def _discover_engine_url(target_engine: str, exclude: set[str] | None = None) ->
 
 def _resolve_process_url(configured_url: str | None, target_engine: str) -> str | None:
     explicit = _to_process_url(configured_url)
-    if explicit and _probe_process_url(explicit, target_engine):
+    if explicit:
         return explicit
-    return _discover_engine_url(target_engine, exclude={explicit} if explicit else None)
+    return _discover_engine_url(target_engine)
 
 
 def _write_export(
@@ -289,12 +295,17 @@ def _write_export(
 def _post_json(url: str | None, payload: dict[str, Any], engine_name: str) -> EngineResult:
     resolved_url = _resolve_process_url(url, engine_name)
     if not resolved_url:
+        env_name = _ENGINE_ENV_NAMES.get(engine_name, "ENGINE_URL")
         return EngineResult(
             engine=engine_name,
             status="SKIPPED",
             payload={
                 "reason": "ENGINE_URL_NOT_SET",
-                "hint": "Start engine service and ensure /health responds with the engine name",
+                "environment_variable": env_name,
+                "hint": (
+                    f"Set {env_name} to the deployed engine API base URL. "
+                    "The service must return JSON from GET /health and POST /process."
+                ),
             },
         )
     try:
@@ -446,7 +457,11 @@ def process_pipeline(
         planner_result = {
             "status": "SKIPPED",
             "reason": "PLANNER_URL_NOT_SET",
-            "hint": "Start planner service and ensure /health responds with engine=planner",
+            "environment_variable": "PLANNER_URL",
+            "hint": (
+                "Set PLANNER_URL to the deployed planner API base URL. "
+                "The service must return JSON from GET /health and POST /process."
+            ),
             "merged_actions": planner_payload["engine_outputs"],
         }
 

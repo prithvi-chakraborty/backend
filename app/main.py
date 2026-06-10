@@ -136,7 +136,15 @@ async def _cors_fallback(request: Request, call_next):
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "engine_urls": {
+            "margin": bool(settings.margin_engine_url),
+            "deadstock": bool(settings.deadstock_engine_url),
+            "credit": bool(settings.credit_engine_url),
+            "planner": bool(settings.planner_url),
+        },
+    }
 
 
 @app.post("/process")

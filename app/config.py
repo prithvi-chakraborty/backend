@@ -14,10 +14,10 @@ def _env(name: str, default: str | None = None) -> str | None:
 
 @dataclass
 class Settings:
-    margin_engine_url: str | None = _env("MARGIN_ENGINE_URL", "http://localhost:9001/process")
-    deadstock_engine_url: str | None = _env("DEADSTOCK_ENGINE_URL", "http://localhost:9002/process")
-    credit_engine_url: str | None = _env("CREDIT_ENGINE_URL", "http://localhost:9003/process")
-    planner_url: str | None = _env("PLANNER_URL", "http://localhost:9004/process")
+    margin_engine_url: str | None = _env("MARGIN_ENGINE_URL")
+    deadstock_engine_url: str | None = _env("DEADSTOCK_ENGINE_URL")
+    credit_engine_url: str | None = _env("CREDIT_ENGINE_URL")
+    planner_url: str | None = _env("PLANNER_URL")
     request_timeout_s: int = int(_env("REQUEST_TIMEOUT_S", "60"))
     export_dir: str = _env("EXPORT_DIR", "exports") or "exports"
 
