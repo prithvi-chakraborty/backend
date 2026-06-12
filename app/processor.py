@@ -11,7 +11,7 @@ from urllib.parse import urlparse, urlunparse
 
 import requests
 
-from .config import settings
+from .config import runtime_engine_url, service_discovery_candidates, settings
 from .models import EngineResult, PipelineResult, ValidationBundle
 from .validation import (
     FileData,
@@ -24,8 +24,8 @@ from .validation import (
 _DISCOVERY_CACHE: dict[str, str] = {}
 _LAST_DISCOVERY_SCAN_AT = 0.0
 _DISCOVERY_SCAN_TTL_S = 15.0
-_DISCOVERY_CONNECT_TIMEOUT_S = 0.2
-_DISCOVERY_READ_TIMEOUT_S = 0.4
+_LOCAL_DISCOVERY_TIMEOUT = (0.2, 0.4)
+_REMOTE_DISCOVERY_TIMEOUT = (3.0, 8.0)
 _MAX_NETSTAT_DISCOVERY_PORTS = 40
 _COMMON_DISCOVERY_PORTS = [
     9001,
@@ -135,13 +135,27 @@ def _canonical_engine_from_reported(reported_engine: str | None) -> str | None:
 
 def _probe_reported_engine(process_url: str) -> str | None:
     try:
+        hostname = (urlparse(process_url).hostname or "").lower()
+        timeout = (
+            _LOCAL_DISCOVERY_TIMEOUT
+            if hostname in {"127.0.0.1", "localhost", "::1"}
+            else _REMOTE_DISCOVERY_TIMEOUT
+        )
         health_resp = requests.get(
             _to_health_url(process_url),
-            timeout=(_DISCOVERY_CONNECT_TIMEOUT_S, _DISCOVERY_READ_TIMEOUT_S),
+            timeout=timeout,
         )
         health_resp.raise_for_status()
         body = health_resp.json()
-        return str(body.get("engine") or "")
+        if not isinstance(body, dict):
+            return None
+        reported_name = (
+            body.get("engine")
+            or body.get("engine_name")
+            or body.get("service")
+            or body.get("name")
+        )
+        return str(reported_name or process_url)
     except Exception:
         return None
 
@@ -249,6 +263,15 @@ def _discover_engine_url(target_engine: str, exclude: set[str] | None = None) ->
             if canonical and process_url not in exclude:
                 _DISCOVERY_CACHE[canonical] = process_url
 
+        for candidate in service_discovery_candidates():
+            process_url = _to_process_url(candidate)
+            if not process_url or process_url in exclude:
+                continue
+            reported = _probe_reported_engine(process_url)
+            canonical = _canonical_engine_from_reported(reported)
+            if canonical:
+                _DISCOVERY_CACHE[canonical] = process_url
+
     cached = _DISCOVERY_CACHE.get(target_engine)
     if cached and cached not in exclude:
         return cached
@@ -256,10 +279,31 @@ def _discover_engine_url(target_engine: str, exclude: set[str] | None = None) ->
 
 
 def _resolve_process_url(configured_url: str | None, target_engine: str) -> str | None:
-    explicit = _to_process_url(configured_url)
+    runtime_url, _ = runtime_engine_url(target_engine)
+    explicit = _to_process_url(runtime_url or configured_url)
     if explicit:
         return explicit
     return _discover_engine_url(target_engine)
+
+
+def engine_configuration() -> dict[str, dict[str, Any]]:
+    configured_urls = {
+        "margin": ("margin-mastery", settings.margin_engine_url),
+        "deadstock": ("deadstock", settings.deadstock_engine_url),
+        "credit": ("credit-remove", settings.credit_engine_url),
+        "planner": ("planner", settings.planner_url),
+    }
+    configuration: dict[str, dict[str, Any]] = {}
+    for label, (engine_name, configured_url) in configured_urls.items():
+        runtime_url, source = runtime_engine_url(engine_name)
+        resolved_url = _resolve_process_url(configured_url, engine_name)
+        configuration[label] = {
+            "configured": bool(runtime_url or configured_url),
+            "resolved": bool(resolved_url),
+            "source": source,
+            "endpoint": resolved_url,
+        }
+    return configuration
 
 
 def _write_export(

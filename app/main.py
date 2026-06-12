@@ -8,8 +8,8 @@ from fastapi import FastAPI, File, UploadFile, Request
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse, Response
 
-from .config import settings
-from .processor import process_pipeline
+from .config import service_discovery_candidates, settings
+from .processor import engine_configuration, process_pipeline
 
 LATEST_RESULT: dict[str, Any] | None = None
 
@@ -136,13 +136,32 @@ async def _cors_fallback(request: Request, call_next):
 
 @app.get("/health")
 def health() -> dict:
+    configuration = engine_configuration()
     return {
         "status": "ok",
         "engine_urls": {
-            "margin": bool(settings.margin_engine_url),
-            "deadstock": bool(settings.deadstock_engine_url),
-            "credit": bool(settings.credit_engine_url),
-            "planner": bool(settings.planner_url),
+            name: details["resolved"]
+            for name, details in configuration.items()
+        },
+        "configuration_sources": {
+            name: details["source"]
+            for name, details in configuration.items()
+        },
+        "discovery_candidate_count": len(service_discovery_candidates()),
+    }
+
+
+@app.get("/configuration")
+def configuration() -> dict:
+    return {
+        "status": "ok",
+        "engines": engine_configuration(),
+        "accepted_environment_variables": {
+            "margin": "MARGIN_ENGINE_URL",
+            "deadstock": "DEADSTOCK_ENGINE_URL",
+            "credit": "CREDIT_ENGINE_URL",
+            "planner": "PLANNER_URL",
+            "fallback_list": "ENGINE_URLS",
         },
     }
 
@@ -153,6 +172,7 @@ def root() -> dict:
         "service": "Profit Pathway Orchestrator",
         "status": "ok",
         "health": "/health",
+        "configuration": "/configuration",
         "process": "/process",
     }
 
