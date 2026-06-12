@@ -50,3 +50,31 @@ The orchestrator identifies each service through its `/health` response.
 - `GET /health` reports whether all engine endpoints resolve.
 - `GET /configuration` reports the resolved endpoint and environment source.
 - `GET /` confirms the orchestrator itself is running.
+
+## Vercel engine API routes
+
+The orchestrator calls `GET /api/health` and `POST /api/process` on each Vercel
+engine host. A frontend-only Vercel deploy (Vite UI without the bundled API
+routes) returns `404 NOT_FOUND` for those paths.
+
+Each engine project now builds serverless handlers from `api-src/` into
+`api/*.cjs` during `npm run build`. After pulling these changes, **redeploy all
+four Vercel projects**:
+
+| Vercel project | Local source folder |
+|---|---|
+| `margin-mastery.vercel.app` | `margin-mastery - Copy/` |
+| `deadstock-count.vercel.app` | `deadStock/stock-salvation-system/` |
+| `credit-compass2.vercel.app` | `credit-compass2/` |
+| `profit-pathway-planner2.vercel.app` | `profit-pathway-planner/profit-pathway-planner/` |
+
+Post-deploy smoke test:
+
+```bash
+curl https://margin-mastery.vercel.app/api/health
+curl -X POST -H "Content-Type: application/json" -d "{\"dataset\":{\"records\":[]}}" https://margin-mastery.vercel.app/api/process
+```
+
+Repeat for the other three hosts. Each `/api/health` should return HTTP 200 JSON
+with an `engine` field, and `/api/process` should return HTTP 200 (not 404 or
+`FUNCTION_INVOCATION_FAILED`).
