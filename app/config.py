@@ -34,6 +34,13 @@ ENGINE_ENV_ALIASES = {
     ),
 }
 
+DEFAULT_ENGINE_URLS = {
+    "margin-mastery": "https://margin-mastery.vercel.app",
+    "deadstock": "https://deadstock-count.vercel.app",
+    "credit-remove": "https://credit-compass2.vercel.app",
+    "planner": "https://profit-pathway-planner2.vercel.app",
+}
+
 _SERVICE_LIST_ENV_NAMES = (
     "ENGINE_URLS",
     "SERVICE_URLS",
@@ -100,6 +107,9 @@ def runtime_engine_url(engine_name: str) -> tuple[str | None, str | None]:
         cleaned_value = _clean_value(embedded_value)
         if matched_alias and cleaned_value:
             return cleaned_value, f"embedded:{matched_alias}"
+    default_url = DEFAULT_ENGINE_URLS.get(engine_name)
+    if default_url:
+        return default_url, "built-in-default"
     return None, None
 
 

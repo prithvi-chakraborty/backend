@@ -86,6 +86,10 @@ def _cors_origins() -> list[str]:
         "http://127.0.0.1:5173",
         "http://localhost:8501",
         "http://127.0.0.1:8501",
+        "https://credit-compass2.vercel.app",
+        "https://margin-mastery.vercel.app",
+        "https://deadstock-count.vercel.app",
+        "https://profit-pathway-planner2.vercel.app",
     }
     if raw:
         origins = {o.strip() for o in raw.split(",") if o.strip()}

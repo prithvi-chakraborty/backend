@@ -22,6 +22,18 @@ PLANNER_URL=https://your-planner-api
 CORS_ORIGINS=https://your-vercel-ui,https://your-streamlit-ui
 ```
 
+The repository defaults are already wired to:
+
+```text
+MARGIN_ENGINE_URL=https://margin-mastery.vercel.app
+DEADSTOCK_ENGINE_URL=https://deadstock-count.vercel.app
+CREDIT_ENGINE_URL=https://credit-compass2.vercel.app
+PLANNER_URL=https://profit-pathway-planner2.vercel.app
+```
+
+For Vercel deployments the orchestrator automatically uses `/api/health` and
+`/api/process`.
+
 Each engine URL may be either a base URL or a `/process` URL. Each deployed
 engine must return JSON from `GET /health` and `POST /process`.
 

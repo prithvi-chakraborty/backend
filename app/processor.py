@@ -106,7 +106,7 @@ def _to_process_url(value: str | None) -> str | None:
     parsed = urlparse(url)
     path = parsed.path.rstrip("/")
     if not path:
-        path = "/process"
+        path = "/api/process" if parsed.hostname and parsed.hostname.endswith(".vercel.app") else "/process"
     elif not path.endswith("/process"):
         path = f"{path}/process"
     return urlunparse(parsed._replace(path=path, params="", query="", fragment=""))
@@ -114,7 +114,8 @@ def _to_process_url(value: str | None) -> str | None:
 
 def _to_health_url(process_url: str) -> str:
     parsed = urlparse(process_url)
-    return urlunparse(parsed._replace(path="/health", params="", query="", fragment=""))
+    path = "/api/health" if parsed.path.rstrip("/") == "/api/process" else "/health"
+    return urlunparse(parsed._replace(path=path, params="", query="", fragment=""))
 
 
 def _matches_engine(target_engine: str, reported_engine: str | None) -> bool:
